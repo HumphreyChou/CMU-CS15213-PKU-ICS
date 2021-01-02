@@ -1,0 +1,44 @@
+# Written by HumpreyChou
+# 1900012455 周裕涵
+
+# Execute
+    .pos 0x0
+    irmovq stack, %rsp
+    call main
+    halt
+
+rsum_list:
+    andq %rdi, %rdi
+    jne label
+    irmovq $0, %rax
+    ret
+label:
+    pushq %rbx
+    mrmovq (%rdi), %rbx
+    mrmovq 8(%rdi), %rdi
+    call rsum_list
+    addq %rbx, %rax
+    popq %rbx
+    ret
+
+# Main function
+main:
+    irmovq ele1, %rdi
+    call rsum_list
+    ret
+
+# Sample
+    .align 8
+ele1:
+    .quad 0x00a
+    .quad ele2
+ele2:
+    .quad 0x0b0
+    .quad ele3
+ele3:
+    .quad 0xc00
+    .quad 0
+
+# Stack starts here
+    .pos 0x100
+stack:

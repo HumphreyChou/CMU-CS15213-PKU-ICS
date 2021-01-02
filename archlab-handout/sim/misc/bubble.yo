@@ -1,0 +1,71 @@
+                            | # Written by HumpreyChou
+                            | # 1900012455 周裕涵
+                            | 
+                            | # Execute
+0x000:                      |     .pos 0x0
+0x000: 30f40001000000000000 |     irmovq stack, %rsp
+0x00a: 809f00000000000000   |     call main
+0x013: 00                   |     halt
+                            | 
+0x014:                      | bubble_sort:
+0x014: 30f30800000000000000 |     irmovq $0x8, %rbx
+                            |     # A stupid way to calculate %rsi times 8
+0x01e: 6066                 |     addq %rsi, %rsi
+0x020: 6066                 |     addq %rsi, %rsi
+0x022: 6066                 |     addq %rsi, %rsi
+0x024: 6076                 |     addq %rdi, %rsi
+0x026: 6136                 |     subq %rbx, %rsi # last in %rsi
+0x028: 708400000000000000   |     jmp L3
+0x031:                      | L4:
+0x031: 6030                 |     addq %rbx, %rax # data++
+0x033:                      | L6:
+                            |     # Compare %rsi(last) and %rax(i) without changing them
+0x033: 2068                 |     rrmovq %rsi, %r8
+0x035: 2009                 |     rrmovq %rax, %r9 
+0x037: 6189                 |     subq %r8, %r9
+0x039: 758200000000000000   |     jge L8
+0x042: 50200800000000000000 |     mrmovq 8(%rax), %rdx  # *(i + 1)
+0x04c: 50100000000000000000 |     mrmovq (%rax), %rcx   # *i
+                            |     # Compare *(i + 1) and *i
+0x056: 2028                 |     rrmovq %rdx, %r8
+0x058: 2019                 |     rrmovq %rcx, %r9
+0x05a: 6198                 |     subq %r9, %r8
+0x05c: 753100000000000000   |     jge L4
+0x065: 40100800000000000000 |     rmmovq %rcx, 8(%rax)
+0x06f: 40200000000000000000 |     rmmovq %rdx, (%rax)
+0x079: 703100000000000000   |     jmp L4
+0x082:                      | L8:
+0x082: 6136                 |     subq %rbx, %rsi # last--
+0x084:                      | L3:
+                            |     # Compare %rdi(data) and %rsi(last)
+0x084: 2078                 |     rrmovq %rdi, %r8
+0x086: 2069                 |     rrmovq %rsi, %r9
+0x088: 6189                 |     subq %r8, %r9
+0x08a: 719e00000000000000   |     jle L9
+0x093: 2070                 |     rrmovq %rdi, %rax # i in %rax
+0x095: 703300000000000000   |     jmp L6
+0x09e:                      | L9:
+                            |     # Confusing ... Why does 0x00f0 and 0x00f8 in memory change?
+0x09e: 90                   |     ret
+                            | 
+                            | 
+                            | # Main function
+0x09f:                      | main:
+0x09f: 30f7c000000000000000 |     irmovq array, %rdi
+0x0a9: 30f60600000000000000 |     irmovq $6, %rsi
+0x0b3: 801400000000000000   |     call bubble_sort
+0x0bc: 90                   |     ret
+                            | 
+                            | # Sample
+0x0c0:                      |     .align 8
+0x0c0:                      | array:
+0x0c0: ca0b000000000000     |     .quad 0xbca
+0x0c8: ba0c000000000000     |     .quad 0xcba
+0x0d0: cb0a000000000000     |     .quad 0xacb
+0x0d8: ab0c000000000000     |     .quad 0xcab
+0x0e0: bc0a000000000000     |     .quad 0xabc
+0x0e8: ac0b000000000000     |     .quad 0xbac
+                            | 
+                            | # Stack starts here
+0x100:                      |     .pos 0x100
+0x100:                      | stack:

@@ -1,0 +1,71 @@
+# Written by HumpreyChou
+# 1900012455 周裕涵
+
+# Execute
+    .pos 0x0
+    irmovq stack, %rsp
+    call main
+    halt
+
+bubble_sort:
+    irmovq $0x8, %rbx
+    # A stupid way to calculate %rsi times 8
+    addq %rsi, %rsi
+    addq %rsi, %rsi
+    addq %rsi, %rsi
+    addq %rdi, %rsi
+    subq %rbx, %rsi # last in %rsi
+    jmp L3
+L4:
+    addq %rbx, %rax # data++
+L6:
+    # Compare %rsi(last) and %rax(i) without changing them
+    rrmovq %rsi, %r8
+    rrmovq %rax, %r9 
+    subq %r8, %r9
+    jge L8
+    mrmovq 8(%rax), %rdx  # *(i + 1)
+    mrmovq (%rax), %rcx   # *i
+    # Compare *(i + 1) and *i
+    rrmovq %rdx, %r8
+    rrmovq %rcx, %r9
+    subq %r9, %r8
+    jge L4
+    rmmovq %rcx, 8(%rax)
+    rmmovq %rdx, (%rax)
+    jmp L4
+L8:
+    subq %rbx, %rsi # last--
+L3:
+    # Compare %rdi(data) and %rsi(last)
+    rrmovq %rdi, %r8
+    rrmovq %rsi, %r9
+    subq %r8, %r9
+    jle L9
+    rrmovq %rdi, %rax # i in %rax
+    jmp L6
+L9:
+    # Confusing ... Why does 0x00f0 and 0x00f8 in memory change?
+    ret
+
+
+# Main function
+main:
+    irmovq array, %rdi
+    irmovq $6, %rsi
+    call bubble_sort
+    ret
+
+# Sample
+    .align 8
+array:
+    .quad 0xbca
+    .quad 0xcba
+    .quad 0xacb
+    .quad 0xcab
+    .quad 0xabc
+    .quad 0xbac
+
+# Stack starts here
+    .pos 0x100
+stack:

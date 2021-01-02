@@ -1,0 +1,42 @@
+                            | # Written by HumpreyChou
+                            | # 1900012455 周裕涵
+                            | 
+                            | # Execute
+0x000:                      |     .pos 0x0
+0x000: 30f40001000000000000 |     irmovq stack, %rsp
+0x00a: 804900000000000000   |     call main
+0x013: 00                   |     halt
+                            | 
+0x014:                      | sum_list:
+0x014: 30f00000000000000000 |     irmovq $0, %rax
+0x01e: 703d00000000000000   |     jmp test
+0x027:                      | loop:
+0x027: 50670000000000000000 |     mrmovq (%rdi), %rsi
+0x031: 6060                 |     addq %rsi, %rax
+0x033: 50770800000000000000 |     mrmovq 8(%rdi), %rdi
+0x03d:                      | test:
+0x03d: 6277                 |     andq %rdi, %rdi
+0x03f: 742700000000000000   |     jne loop
+0x048: 90                   |     ret
+                            | 
+                            | # Main function
+0x049:                      | main:
+0x049: 30f76000000000000000 |     irmovq ele1, %rdi
+0x053: 801400000000000000   |     call sum_list
+0x05c: 90                   |     ret
+                            | 
+                            | # Sample
+0x060:                      |     .align 8
+0x060:                      | ele1:
+0x060: 0a00000000000000     |     .quad 0x00a
+0x068: 7000000000000000     |     .quad ele2
+0x070:                      | ele2:
+0x070: b000000000000000     |     .quad 0x0b0
+0x078: 8000000000000000     |     .quad ele3
+0x080:                      | ele3:
+0x080: 000c000000000000     |     .quad 0xc00
+0x088: 0000000000000000     |     .quad 0
+                            | 
+                            | # Stack starts here
+0x100:                      |     .pos 0x100
+0x100:                      | stack:

